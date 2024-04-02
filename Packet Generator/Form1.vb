@@ -41,7 +41,7 @@ Public Class Form1
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim sourceFolder As String = "R:\Documents\Packet Generator\Configurations\"
         Dim outputFolder As String = "R:\Documents\Packet Generator\Test Folder\PDFs\"
-        Dim excelOutputFolder As String = "R:\Documents\Packet Generator\Test Folder\Panel Builder\" ' New folder for Excel file
+        Dim excelOutputFolder As String = "R:\Documents\Packet Generator\Test Folder\Panel Builder\" ' New folder for Panel Builder file
         Dim selectedFolderName As String = If(ComboBox1.SelectedItem IsNot Nothing, ComboBox1.SelectedItem.ToString(), "")
         Dim salesOrderNumber As String = TextBox1.Text.Trim()
         Dim KineticQuoteNumber As String = TextBox5.Text.Trim()
@@ -82,11 +82,20 @@ Public Class Form1
         Catch ex As Exception
             MessageBox.Show($"Error: {ex.Message}")
         End Try
-        'Print the PDF file
-        'PrintPDF(outputPdfPath)
 
-        'Print the tab-delimited text file
-        'PrintTextFile(tabDelimitedOutputPath)
+        If CheckBox1.Checked Then
+            'Print the PDF file
+            PrintPDF(outputPdfPath)
+        Else
+
+        End If
+
+        If CheckBox2.Checked Then
+            'Print the tab-delimited text file
+            PrintTextFile(tabDelimitedOutputPath)
+        Else
+
+        End If
 
     End Sub
     ' Method to print PDF using default system handler

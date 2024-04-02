@@ -35,6 +35,8 @@ Partial Class Form1
         TextBox6 = New TextBox()
         TextBox7 = New TextBox()
         TextBox8 = New TextBox()
+        CheckBox1 = New CheckBox()
+        CheckBox2 = New CheckBox()
         CType(PictureBox1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -136,11 +138,37 @@ Partial Class Form1
         TextBox8.TabIndex = 10
         TextBox8.Text = "Please Enter FWC#:"
         ' 
+        ' CheckBox1
+        ' 
+        CheckBox1.AutoSize = True
+        CheckBox1.Checked = True
+        CheckBox1.CheckState = CheckState.Checked
+        CheckBox1.Location = New Point(208, 350)
+        CheckBox1.Name = "CheckBox1"
+        CheckBox1.Size = New Size(116, 19)
+        CheckBox1.TabIndex = 11
+        CheckBox1.Text = "Print CAD Packet"
+        CheckBox1.UseVisualStyleBackColor = True
+        ' 
+        ' CheckBox2
+        ' 
+        CheckBox2.AutoSize = True
+        CheckBox2.Checked = True
+        CheckBox2.CheckState = CheckState.Checked
+        CheckBox2.Location = New Point(208, 375)
+        CheckBox2.Name = "CheckBox2"
+        CheckBox2.Size = New Size(123, 19)
+        CheckBox2.TabIndex = 12
+        CheckBox2.Text = "Print Panel Builder"
+        CheckBox2.UseVisualStyleBackColor = True
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(800, 450)
+        Controls.Add(CheckBox2)
+        Controls.Add(CheckBox1)
         Controls.Add(TextBox8)
         Controls.Add(TextBox7)
         Controls.Add(TextBox6)
@@ -171,4 +199,6 @@ Partial Class Form1
     Friend WithEvents TextBox6 As TextBox
     Friend WithEvents TextBox7 As TextBox
     Friend WithEvents TextBox8 As TextBox
+    Friend WithEvents CheckBox1 As CheckBox
+    Friend WithEvents CheckBox2 As CheckBox
 End Class

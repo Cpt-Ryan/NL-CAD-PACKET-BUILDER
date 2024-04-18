@@ -2,9 +2,16 @@
 Imports iTextSharp.text.pdf
 Imports ClosedXML.Excel
 Imports System.Drawing.Printing
+Imports iTextSharp.text
+
 Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         PopulateComboBoxWithFolders(ComboBox1, "R:\Documents\Packet Generator\Configurations\")
+        ToolTip1.SetToolTip(CheckBox1, "Selects whether the CAD Packet gets printed")
+        ToolTip1.SetToolTip(CheckBox2, "Selects whether the Panel Builder gets printed")
+        ToolTip1.SetToolTip(CheckBox3, "Don't Touch unless you are Rob")
+        ToolTip1.SetToolTip(Button1, "Generate and set a CAD Packet and Panel Buidler to Jobscans and Downloads Computair")
+
     End Sub
 
     Private Sub PopulateComboBoxWithFolders(comboBox As ComboBox, directoryPath As String)
@@ -39,18 +46,41 @@ Public Class Form1
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        'Initalize Progress Bar
+        ProgressBar1.Visible = True
+
+        If CheckBox1.Checked OrElse CheckBox2.Checked Then
+            ProgressBar1.Maximum = 3
+        Else
+            ProgressBar1.Maximum = 2
+        End If
+
         Dim sourceFolder As String = "R:\Documents\Packet Generator\Configurations\"
-        Dim outputFolder As String = "R:\Documents\Packet Generator\Test Folder\PDFs\"
-        Dim excelOutputFolder As String = "R:\Documents\Packet Generator\Test Folder\Panel Builder\" ' New folder for Panel Builder file
+        Dim outputFolder As String
+        Dim excelOutputFolder As String
         Dim selectedFolderName As String = If(ComboBox1.SelectedItem IsNot Nothing, ComboBox1.SelectedItem.ToString(), "")
         Dim salesOrderNumber As String = TextBox1.Text.Trim()
         Dim KineticQuoteNumber As String = TextBox5.Text.Trim()
         Dim OrderNumber As String = TextBox6.Text.Trim()
+        Dim ScheduleNumber As String = TextBox2.Text.Trim()
+        'Get Current Date
+        Dim currentDate As DateTime = DateTime.Now
+        Dim dateString As String = currentDate.ToString("MM/dd/yy")
+
+        If TESTBOX.Checked Then
+            excelOutputFolder = "R:\Documents\Packet Generator\Test Folder\Panel Builder\"
+            outputFolder = "R:\Documents\Packet Generator\Test Folder\PDFs\"
+        Else 'Test unchecked
+            excelOutputFolder = "N:\Downloads-COMPUTAIR\"
+            outputFolder = "R:\JOBSCANS\"
+
+        End If
 
         If String.IsNullOrEmpty(selectedFolderName) OrElse String.IsNullOrEmpty(salesOrderNumber) Then
             MessageBox.Show("Please select a configuration and enter a sales order number.")
             Return
         End If
+
 
         Dim sourcePdfPath As String = Path.Combine(sourceFolder, selectedFolderName, selectedFolderName & ".pdf")
         Dim outputPdfPath As String = Path.Combine(outputFolder, salesOrderNumber & ".pdf")
@@ -67,15 +97,24 @@ Public Class Form1
                     formFields.SetField("SALESORDER", salesOrderNumber)
                     formFields.SetField("KQ", KineticQuoteNumber)
                     formFields.SetField("FWC", OrderNumber)
+                    formFields.SetField("DATE", dateString)
+                    'Make the Schedule Text Feild to red
+                    Dim redColor As New BaseColor(255, 0, 0) ' Red color
+                    formFields.SetFieldProperty("SCH", "textcolor", redColor, Nothing)
+                    formFields.SetField("SCH", ScheduleNumber)
                     stamper.FormFlattening = True
                     stamper.Close()
                 End Using
             End Using
 
+            ProgressBar1.Value = 1
+
             ' Export range as tab-delimited text file
             ExportRangeAsTabDelimited(excelFilePath, tabDelimitedOutputPath, salesOrderNumber)
 
-            MessageBox.Show("PDF modified and Excel range exported to text file successfully." & vbCrLf & "CAD Packet Sent to Job Scans, Panel Builder File Sent to Computair Downloads.")
+            ProgressBar1.Value = 2
+
+            MessageBox.Show("PDF modified and Excel range exported to text file successfully." & vbCrLf & "CAD Packet Sent to Job Scans, Panel Builder File Sent to Downloads Computair.")
 
         Catch ex As FileNotFoundException
             MessageBox.Show($"Error: {ex.Message}. Make sure the file exists.")
@@ -86,6 +125,7 @@ Public Class Form1
         If CheckBox1.Checked Then
             'Print the PDF file
             PrintPDF(outputPdfPath)
+            ProgressBar1.Value = 3
         Else
 
         End If
@@ -93,9 +133,14 @@ Public Class Form1
         If CheckBox2.Checked Then
             'Print the tab-delimited text file
             PrintTextFile(tabDelimitedOutputPath)
+            ProgressBar1.Value = 3
         Else
 
         End If
+
+        ProgressBar1.Visible = False
+
+        ProgressBar1.Value = 0
 
     End Sub
     ' Method to print PDF using default system handler
@@ -170,6 +215,11 @@ Public Class Form1
         processInfo.FileName = "notepad.exe"
         processInfo.Arguments = "/p """ & filePath & """" ' /p argument instructs Notepad to print the file
         Process.Start(processInfo)
+    End Sub
+
+    Private Sub CheckBox3_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox3.CheckedChanged
+        TextBox2.Visible = CheckBox3.Checked
+        Label6.Visible = CheckBox3.Checked
     End Sub
 
 

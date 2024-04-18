@@ -81,7 +81,7 @@ Public Class Form1
             Return
         End If
 
-
+        'Note
         Dim sourcePdfPath As String = Path.Combine(sourceFolder, selectedFolderName, selectedFolderName & ".pdf")
         Dim outputPdfPath As String = Path.Combine(outputFolder, salesOrderNumber & ".pdf")
         Dim excelFilePath As String = Path.Combine(sourceFolder, selectedFolderName, selectedFolderName & ".xlsx")

@@ -114,7 +114,11 @@ Public Class Form1
 
             ProgressBar1.Value = 2
 
-            MessageBox.Show("PDF modified and Excel range exported to text file successfully." & vbCrLf & "CAD Packet Sent to Job Scans, Panel Builder File Sent to Downloads Computair.")
+            If TESTBOX.Checked Then
+                MessageBox.Show("PDF modified and Excel range exported to text file successfully." & vbCrLf & "CAD Packet Sent to Test Folder, Panel Builder File Sent to Test Folder.")
+            Else
+                MessageBox.Show("PDF modified and Excel range exported to text file successfully." & vbCrLf & "CAD Packet Sent to Job Scans, Panel Builder File Sent to Downloads Computair.")
+            End If
 
         Catch ex As FileNotFoundException
             MessageBox.Show($"Error: {ex.Message}. Make sure the file exists.")
@@ -169,7 +173,7 @@ Public Class Form1
         workbook.RecalculateAllFormulas()
 
         ' Find the last row used in column Y
-        Dim lastRow As Integer = worksheet.Column("Y").LastCellUsed().Address.RowNumber
+        Dim lastRow As Integer = worksheet.Column("A").LastCellUsed().Address.RowNumber
 
         ' Open a StreamWriter to write the tab-delimited text
         Using writer As New StreamWriter(textOutputFilePath, False)

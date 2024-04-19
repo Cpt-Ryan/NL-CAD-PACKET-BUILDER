@@ -25,7 +25,7 @@
     <PackageReference Include="ExcelLibrary" Version="1.2011.7.31" />
     <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="PDFsharp" Version="6.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>

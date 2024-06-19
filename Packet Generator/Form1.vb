@@ -226,5 +226,5 @@ Public Class Form1
         Label6.Visible = CheckBox3.Checked
     End Sub
 
-
+    'Note
 End Class

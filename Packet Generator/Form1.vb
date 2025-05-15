@@ -33,9 +33,10 @@ Public Class Form1
     Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
         If ComboBox1.SelectedItem Is Nothing Then Return
 
-        Dim baseImagePath As String = "R:\Documents\Packet Generator\Images\"
+        Dim baseImagePath As String = "\\10.27.1.207\Walk-In_Design\Documents\Packet Generator\Images\"
         Dim selectedFolder As String = ComboBox1.SelectedItem.ToString()
         Dim imagePath As String = Path.Combine(baseImagePath, selectedFolder + ".png")
+        'MessageBox.Show(imagePath)
 
         If File.Exists(imagePath) Then
             If PictureBox1.Image IsNot Nothing Then
@@ -58,7 +59,7 @@ Public Class Form1
             ProgressBar1.Maximum = 2
         End If
 
-        Dim sourceFolder As String = "R:\Documents\Packet Generator\Configurations\"
+        Dim sourceFolder As String = "\\10.27.1.207\Walk-In_Design\Documents\Packet Generator\Configurations\"
         Dim outputFolder As String
         Dim excelOutputFolder As String
         Dim selectedFolderName As String = If(ComboBox1.SelectedItem IsNot Nothing, ComboBox1.SelectedItem.ToString(), "")
@@ -71,11 +72,11 @@ Public Class Form1
         Dim dateString As String = currentDate.ToString("MM/dd/yy")
 
         If TESTBOX.Checked Then
-            excelOutputFolder = "R:\Documents\Packet Generator\Test Folder\Panel Builder\"
-            outputFolder = "R:\Documents\Packet Generator\Test Folder\PDFs\"
+            excelOutputFolder = "\\10.27.1.207\Walk-In_Design\Documents\Packet Generator\Test Folder\Panel Builder\"
+            outputFolder = "\\10.27.1.207\Walk-In_Design\Documents\Packet Generator\Test Folder\PDFs\"
         Else 'Test unchecked
-            excelOutputFolder = "N:\Downloads-COMPUTAIR\"
-            outputFolder = "R:\JOBSCANS\"
+            excelOutputFolder = "\\10.10.3.97\MAC_Files\MacUsers\Panelbuilder_Files\Downloads-COMPUTAIR"
+            outputFolder = "\\10.27.1.207\Walk-In_Design\JOBSCANS\"
 
         End If
 

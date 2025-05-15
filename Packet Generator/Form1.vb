@@ -1,8 +1,11 @@
 ﻿Imports System.IO
+Imports System.Text
 Imports iTextSharp.text.pdf
 Imports ClosedXML.Excel
 Imports System.Drawing.Printing
 Imports iTextSharp.text
+Imports System.Net.Http
+Imports System.Net.Http.Headers
 
 Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -113,6 +116,8 @@ Public Class Form1
             ExportRangeAsTabDelimited(excelFilePath, tabDelimitedOutputPath, salesOrderNumber)
 
             ProgressBar1.Value = 2
+            ' Upload PDF to DocuWare
+            'UploadPdfToDocuWare(outputPdfPath, salesOrderNumber)
 
             If TESTBOX.Checked Then
                 MessageBox.Show("PDF modified and Excel range exported to text file successfully." & vbCrLf & "CAD Packet Sent to Test Folder, Panel Builder File Sent to Test Folder.")
@@ -226,5 +231,45 @@ Public Class Form1
         Label6.Visible = CheckBox3.Checked
     End Sub
 
-    'Note
+    'Send a Copy to Docuware
+    Async Function UploadPdfToDocuWare(pdfFilePath As String, salesOrderNumber As String) As Task
+        Dim baseAddress As String = "https://yourdocuwareserver/DocuWare/Platform"
+        Dim organization As String = "yourOrganization"
+        Dim username As String = "yourUsername"
+        Dim password As String = "yourPassword"
+        Dim fileCabinetId As String = "yourFileCabinetId"
+
+        Using client As New HttpClient()
+            client.BaseAddress = New Uri(baseAddress)
+            client.DefaultRequestHeaders.Accept.Clear()
+            client.DefaultRequestHeaders.Accept.Add(New MediaTypeWithQualityHeaderValue("application/json"))
+
+            ' Step 1: Authenticate
+            Dim authContent = New StringContent($"{{""UserName"":""{username}"",""Password"":""{password}"",""Organization"":""{organization}""}}", Encoding.UTF8, "application/json")
+            Dim authResponse = Await client.PostAsync("/Account/Logon", authContent)
+
+            If authResponse.IsSuccessStatusCode Then
+                Dim authResult = Await authResponse.Content.ReadAsStringAsync()
+                Console.WriteLine("Authentication successful")
+
+                ' Step 2: Upload the PDF
+                Using fileStream As New FileStream(pdfFilePath, FileMode.Open, FileAccess.Read)
+                    Dim content = New MultipartFormDataContent()
+                    Dim fileContent = New StreamContent(fileStream)
+                    fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/pdf")
+                    content.Add(fileContent, "file", Path.GetFileName(pdfFilePath))
+
+                    Dim uploadResponse = Await client.PostAsync($"/FileCabinets/{fileCabinetId}/Documents", content)
+
+                    If uploadResponse.IsSuccessStatusCode Then
+                        Console.WriteLine("PDF uploaded to DocuWare successfully")
+                    Else
+                        Console.WriteLine($"Failed to upload PDF to DocuWare: {uploadResponse.StatusCode}")
+                    End If
+                End Using
+            Else
+                Console.WriteLine("Authentication failed")
+            End If
+        End Using
+    End Function
 End Class
